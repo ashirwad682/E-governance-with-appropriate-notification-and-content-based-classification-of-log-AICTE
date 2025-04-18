@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register - E-Governance Log System</title>
+  <style>
+    :root {
+      --bg-color: #ffffff;
+      --text-color: #000000;
+      --primary-color: #003366;
+      --button-hover: #002147;
+    }
+
+    [data-theme="dark"] {
+      --bg-color: #121212;
+      --text-color: #f0f0f0;
+      --primary-color: #3399ff;
+      --button-hover: #0077cc;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    header {
+      text-align: center;
+      margin-top: 2rem;
+    }
+
+    nav {
+      text-align: center;
+      margin: 1rem;
+    }
+
+    nav a {
+      margin: 0 10px;
+      text-decoration: none;
+      color: var(--primary-color);
+      font-weight: bold;
+    }
+
+    .register-box {
+      background: var(--bg-color);
+      color: var(--text-color);
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      width: 400px;
+    }
+
+    h2 {
+      text-align: center;
+      color: var(--primary-color);
+    }
+
+    label {
+      display: block;
+      margin-top: 1rem;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #fff;
+    }
+
+    button {
+      margin-top: 1.5rem;
+      width: 100%;
+      padding: 0.7rem;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: var(--button-hover);
+    }
+
+    .note {
+      font-size: 0.85rem;
+      color: #777;
+      margin-top: 1rem;
+      text-align: center;
+    }
+
+    .otp-box {
+      display: none;
+      margin-top: 0.5rem;
+    }
+
+    .verified-badge {
+      display: none;
+      text-align: center;
+      margin-top: 1rem;
+      background-color: #d4edda;
+      color: #155724;
+      padding: 0.5rem;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+
+    .inline-button {
+      width: auto;
+      padding: 0.3rem 0.5rem;
+      margin-left: 5px;
+      font-size: 0.85rem;
+      border-radius: 5px;
+      cursor: pointer;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+    }
+
+    .inline-button:hover {
+      background-color: var(--button-hover);
+    }
+
+    .input-group {
+      display: flex;
+      align-items: center;
+    }
+
+    .otp-verification-group {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .dark-mode-toggle {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      font-size: 1rem;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    .dark-mode-toggle:hover {
+      background-color: var(--button-hover);
+    }
+  </style>
+</head>
+<body>
+  <button class="dark-mode-toggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">🌙</button>
+
+  <header>
+    <h1>Government of India - E-Governance Portal</h1>
+    <p>AICTE-Compliant Server Log Management System</p>
+  </header>
+
+  <nav>
+    <a href="1.html">Home</a>
+    <a href="login.html">Login</a>
+    <a href="3.html">Contact</a>
+  </nav>
+
+  <div class="register-box">
+    <h2>Departmental Registration</h2>
+    <form id="registerForm" action="verify_otp.php" method="POST">
+      <label for="fullname">Full Name</label>
+      <input type="text" id="fullname" name="fullname" required>
+
+      <label for="email">Official Email</label>
+      <div class="input-group">
+        <input type="email" id="email" name="email" required 
+          pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.gov\.in$"
+          title="Only official government emails allowed"
+          oninput="toggleEmailButton()">
+        <button type="button" id="emailOtpBtn" class="inline-button" onclick="sendEmailOTP()" style="display: none;">Send OTP</button>
+      </div>
+      <div class="otp-box" id="emailOtpBox">
+        <div class="otp-verification-group">
+          <input type="text" id="email_otp" name="email_otp" placeholder="Enter Email OTP" required>
+          <button type="button" class="inline-button" onclick="verifyEmailOTP()">Verify</button>
+        </div>
+      </div>
+
+      <label for="phone">Phone Number</label>
+      <div class="input-group">
+        <input type="tel" id="phone" name="phone" required pattern="[0-9]{10}"
+          title="Enter a 10-digit mobile number"
+          oninput="togglePhoneButton()">
+        <button type="button" id="phoneOtpBtn" class="inline-button" onclick="sendPhoneOTP()" style="display: none;">Send OTP</button>
+      </div>
+      <div class="otp-box" id="phoneOtpBox">
+        <div class="otp-verification-group">
+          <input type="text" id="phone_otp" name="phone_otp" placeholder="Enter Phone OTP" required>
+          <button type="button" class="inline-button" onclick="verifyPhoneOTP()">Verify</button>
+        </div>
+      </div>
+
+      <div class="verified-badge" id="verifiedBadge">✅ Email & Phone Verified</div>
+
+      <label for="department">Department</label>
+      <select id="department" name="department" required>
+        <option value="IT">Information Technology</option>
+        <option value="Admin">Administration</option>
+        <option value="Finance">Finance</option>
+        <option value="Public Relations">Public Relations</option>
+        <option value="Planning">Planning</option>
+      </select>
+
+      <label for="role">Role</label>
+      <select id="role" name="role" required>
+        <option value="it">IT Staff</option>
+        <option value="admin">Administrator</option>
+        <option value="gov">Government Officer</option>
+      </select>
+
+      <button type="submit" id="submitBtn" disabled>Verify & Register</button>
+    </form>
+    <p class="note">Note: OTP will be sent to your email and phone. Email must be unique and registered only once.</p>
+  </div>
+
+  <script>
+    let emailVerified = false;
+    let phoneVerified = false;
+
+    function toggleEmailButton() {
+      const email = document.getElementById("email").value.trim();
+      const button = document.getElementById("emailOtpBtn");
+      button.style.display = email.length > 5 ? "inline-block" : "none";
+    }
+
+    function togglePhoneButton() {
+      const phone = document.getElementById("phone").value.trim();
+      const button = document.getElementById("phoneOtpBtn");
+      button.style.display = phone.length === 10 ? "inline-block" : "none";
+    }
+
+    function sendEmailOTP() {
+      const email = document.getElementById("email").value;
+      fetch("send_email_otp.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `email=${encodeURIComponent(email)}`
+      })
+      .then(res => res.text())
+      .then(response => {
+        alert(response);
+        document.getElementById("emailOtpBox").style.display = "block";
+      });
+    }
+
+    function sendPhoneOTP() {
+      const phone = document.getElementById("phone").value;
+      fetch("send_phone_otp.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `phone=${encodeURIComponent(phone)}`
+      })
+      .then(res => res.text())
+      .then(response => {
+        alert(response);
+        document.getElementById("phoneOtpBox").style.display = "block";
+      });
+    }
+
+    function verifyEmailOTP() {
+      const otp = document.getElementById("email_otp").value;
+      fetch("verify_email_otp.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `otp=${otp}`
+      })
+      .then(res => res.text())
+      .then(response => {
+        if (response.trim() === "verified") {
+          emailVerified = true;
+          checkBothVerified();
+        } else {
+          alert("Invalid Email OTP");
+        }
+      });
+    }
+
+    function verifyPhoneOTP() {
+      const otp = document.getElementById("phone_otp").value;
+      fetch("verify_phone_otp.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `otp=${otp}`
+      })
+      .then(res => res.text())
+      .then(response => {
+        if (response.trim() === "verified") {
+          phoneVerified = true;
+          checkBothVerified();
+        } else {
+          alert("Invalid Phone OTP");
+        }
+      });
+    }
+
+    function checkBothVerified() {
+      if (emailVerified && phoneVerified) {
+        document.getElementById("verifiedBadge").style.display = "block";
+        document.getElementById("submitBtn").disabled = false;
+      }
+    }
+
+    function toggleDarkMode() {
+      const current = document.documentElement.getAttribute('data-theme');
+      document.documentElement.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const sendBtn = document.getElementById("sendOTPBtn");
+      if (sendBtn) {
+        sendBtn.addEventListener("click", () => {
+          const email = document.querySelector("[name='email']").value;
+          fetch("send_email_otp.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: `email=${encodeURIComponent(email)}`
+          })
+          .then(res => res.text())
+          .then(alert);
+        });
+      }
+    });
+  </script>
+</body>
+</html>
