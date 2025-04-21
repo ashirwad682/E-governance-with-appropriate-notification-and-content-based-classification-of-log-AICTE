@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>E-Governance Log System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    /* Root Styling */
+    :root {
+      --bg-color: #f4f4f4;
+      --text-color: #333;
+      --header-bg: #002147;
+      --nav-bg: #014682;
+      --button-bg: #0055a5;
+      --button-hover: #003e7e;
+    }
+
+    /* Dark Theme */
+    .dark-theme {
+      --bg-color: #121212;
+      --text-color: #f4f4f4;
+      --header-bg: #1c1c1c;
+      --nav-bg: #2a2a2a;
+      --button-bg: #333;
+      --button-hover: #444;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    header, nav, footer {
+      text-align: center;
+      padding: 1rem;
+    }
+
+    header {
+      background-color: var(--header-bg);
+      color: white;
+      padding: 2rem 1rem;
+      position: relative;
+    }
+
+    header img {
+      width: 25%;
+      max-width: 250px;
+      border-radius: 8px;
+      margin-top: 1rem;
+    }
+
+    .top-right-actions {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .sign-in-btn {
+      background-color: var(--button-bg);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+    }
+
+    .sign-in-btn:hover {
+      background-color: var(--button-hover);
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.25rem;
+      cursor: pointer;
+    }
+
+    nav {
+      background-color: var(--nav-bg);
+      padding: 0.75rem 1rem;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+      color: #ffcc00;
+    }
+
+    main {
+      padding: 2rem 1rem;
+      text-align: center;
+    }
+
+    main h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    main p {
+      font-size: 1.1rem;
+      max-width: 700px;
+      margin: 0 auto 2rem;
+      line-height: 1.6;
+    }
+
+    .cta-button {
+      background-color: var(--button-bg);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: background-color 0.3s ease;
+    }
+
+    .cta-button:hover {
+      background-color: var(--button-hover);
+    }
+
+    /* Modal Styling */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      justify-content: center;
+      align-items: center;
+      animation: fadeIn 0.3s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      text-align: center;
+      max-width: 90%;
+      width: 300px;
+    }
+
+    .modal-content button {
+      margin: 0.5rem;
+      padding: 0.6rem 1.5rem;
+      font-size: 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      border: none;
+      background-color: var(--button-bg);
+      color: white;
+    }
+
+    .modal-content button:hover {
+      background-color: var(--button-hover);
+    }
+
+    footer {
+      background-color: var(--header-bg);
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      font-size: 0.9rem;
+    }
+
+    /* Loader */
+    #loader {
+      position: fixed;
+      z-index: 2000;
+      width: 100%;
+      height: 100%;
+      background: var(--bg-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #loader i {
+      font-size: 2rem;
+      color: var(--button-bg);
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 600px) {
+      nav {
+        flex-direction: column;
+      }
+
+      .top-right-actions {
+        flex-direction: column;
+        right: 0.5rem;
+        top: 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Loading Animation -->
+  <div id="loader"><i class="fas fa-circle-notch"></i></div>
+
+  <header>
+    <div class="top-right-actions">
+      <a class="sign-in-btn" href="login.html"><i class="fas fa-sign-in-alt"></i> Sign In</a>
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Dark/Light Theme">
+        <i id="themeIcon" class="fas fa-moon"></i>
+      </button>
+    </div>
+    <h1>Government of India - E-Governance Portal</h1>
+    <p>AICTE-Compliant Server Log Management System</p>
+    <a href="https://www.aicte-india.org/" target="_blank" title="Visit AICTE Official Website">
+      <img src="https://mlmzwlxpr5yp.i.optimole.com/cb:wJGC.2dace/w:864/h:540/q:mauto/f:best/https://www.muonline.ac.in/blog/wp-content/uploads/2023/10/AICTE-Accreditation.jpg" alt="AICTE Logo">
+    </a>
+  </header>
+
+  <nav>
+    <a href="1.html">Home</a>
+    <a href="2.html">About</a>
+    <a href="3.html">Contact</a>
+  </nav>
+
+  <main>
+    <h2>Welcome to the Server Log Monitoring System</h2>
+    <p>This portal provides a real-time log management interface for secure e-governance operations.</p>
+    <button class="cta-button" onclick="openModal()">Go to Log System</button>
+  </main>
+
+  <!-- Login Choice Modal -->
+  <div class="modal" id="loginModal" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+    <div class="modal-content">
+      <h3 id="loginTitle">Choose Login Type</h3>
+      <button onclick="location.href='admin_login1.php'">Admin Login</button>
+      <button onclick="location.href='login.html'">User Login</button>
+      <button onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2025 Government of India | Designed for AICTE E-Governance Compliance
+  </footer>
+
+  <script>
+    // Dark theme detection
+    window.onload = function () {
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark-theme');
+        document.getElementById("themeIcon").classList.remove("fa-moon");
+        document.getElementById("themeIcon").classList.add("fa-sun");
+      }
+      setTimeout(() => document.getElementById('loader').style.display = 'none', 700);
+    }
+
+    function toggleTheme() {
+      const body = document.body;
+      const icon = document.getElementById("themeIcon");
+      body.classList.toggle('dark-theme');
+      icon.classList.toggle("fa-sun");
+      icon.classList.toggle("fa-moon");
+    }
+
+    function openModal() {
+      document.getElementById("loginModal").style.display = "flex";
+    }
+
+    function closeModal() {
+      document.getElementById("loginModal").style.display = "none";
+    }
+  </script>
+</body>
+</html>
